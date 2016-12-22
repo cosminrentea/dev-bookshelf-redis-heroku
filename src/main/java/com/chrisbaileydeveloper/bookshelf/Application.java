@@ -28,7 +28,6 @@ public class Application {
      */
     public static void main(String[] args) throws UnknownHostException {
         SpringApplication app = new SpringApplication(Application.class);
-        app.setShowBanner(false);
 
         SimpleCommandLinePropertySource source = new SimpleCommandLinePropertySource(args);
 
