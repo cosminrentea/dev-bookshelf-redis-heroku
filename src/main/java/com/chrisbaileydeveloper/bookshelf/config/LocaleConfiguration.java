@@ -12,16 +12,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
-
 import uk.co.gcwilliams.jodatime.thymeleaf.JodaTimeDialect;
 
 @Configuration
 public class LocaleConfiguration extends WebMvcConfigurerAdapter {
 
     /**
-     *  Thymeleaf LocaleResolver
+     * Thymeleaf LocaleResolver
      */
-    @Bean (name = "localeResolver")
+    @Bean(name = "localeResolver")
     public LocaleResolver localeResolver() {
         SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
         sessionLocaleResolver.setDefaultLocale(Locale.CANADA);
@@ -30,11 +29,11 @@ public class LocaleConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-    	LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-    	localeChangeInterceptor.setParamName("lang");
-    	registry.addInterceptor(localeChangeInterceptor);
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");
+        registry.addInterceptor(localeChangeInterceptor);
     }
-    
+
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -42,22 +41,22 @@ public class LocaleConfiguration extends WebMvcConfigurerAdapter {
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
-    
+
     /**
-     *  Joda Time to Thymeleaf converter<br>
-     *  Spring Boot, in the ThymeleafAutoConfiguration class, 
-     *  will automatically add any Beans that implement the IDialect interface.
+     * Joda Time to Thymeleaf converter<br>
+     * Spring Boot, in the ThymeleafAutoConfiguration class,
+     * will automatically add any Beans that implement the IDialect interface.
      */
     @Bean
     public JodaTimeDialect jodaTimeDialect() {
-    	return new JodaTimeDialect();
+        return new JodaTimeDialect();
     }
-    
+
     /**
-     *  Thymeleaf - Spring Security Integration
+     * Thymeleaf - Spring Security Integration
      */
     @Bean
     public SpringSecurityDialect springSecurityDialect() {
-    	return new SpringSecurityDialect();
+        return new SpringSecurityDialect();
     }
 }

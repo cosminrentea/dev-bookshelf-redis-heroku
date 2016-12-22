@@ -9,6 +9,11 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.chrisbaileydeveloper.bookshelf.domain.Book;
+import com.chrisbaileydeveloper.bookshelf.service.BookService;
+import com.chrisbaileydeveloper.bookshelf.web.util.ImageUtil;
+import com.chrisbaileydeveloper.bookshelf.web.util.Message;
+import com.chrisbaileydeveloper.bookshelf.web.util.UrlUtil;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,181 +30,173 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.chrisbaileydeveloper.bookshelf.domain.Book;
-import com.chrisbaileydeveloper.bookshelf.service.BookService;
-import com.chrisbaileydeveloper.bookshelf.web.util.ImageUtil;
-import com.chrisbaileydeveloper.bookshelf.web.util.Message;
-import com.chrisbaileydeveloper.bookshelf.web.util.UrlUtil;
-
 @RequestMapping("/")
 @Controller
-public class BookController { 
+public class BookController {
 
-	final Logger logger = LoggerFactory.getLogger(BookController.class);
+    private final Logger logger = LoggerFactory.getLogger(BookController.class);
 
-	@Inject
-	private BookService bookService;
+    @Inject
+    private BookService bookService;
 
-	@Inject
-	private MessageSource messageSource;
+    @Inject
+    private MessageSource messageSource;
 
-	/**
-	 * List all books.
+    /**
+     * List all books.
      */
-	@RequestMapping(method = RequestMethod.GET)
-	public String list(Model model) {
-		logger.info("Listing books");
+    @RequestMapping(method = RequestMethod.GET)
+    public String list(Model model) {
+        logger.info("Listing books");
 
-		List<Book> books = bookService.findAll();
-		model.addAttribute("books", books);
+        List<Book> books = bookService.findAll();
+        model.addAttribute("books", books);
 
-		logger.info("No. of books: " + books.size());
+        logger.info("No. of books: " + books.size());
 
-		return "books/list";
-	}
+        return "books/list";
+    }
 
-	/**
-	 * Retrieve the book with the specified id.
-	 */
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public String show(@PathVariable("id") String id, Model model) {
-		logger.info("Listing book with id: " + id);
+    /**
+     * Retrieve the book with the specified id.
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public String show(@PathVariable("id") String id, Model model) {
+        logger.info("Listing book with id: " + id);
 
-		Book book = bookService.findById(id);
-		model.addAttribute("book", book);
-		
-		return "books/show";
-	}
+        Book book = bookService.findById(id);
+        model.addAttribute("book", book);
 
-	/**
-	 * Retrieve the book with the specified id for the update form.
-	 */
-	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+        return "books/show";
+    }
+
+    /**
+     * Retrieve the book with the specified id for the update form.
+     */
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model model) {
-		model.addAttribute("book", bookService.findById(id));
+        model.addAttribute("book", bookService.findById(id));
         return "books/create";
     }
 
-	/**
-	 * Create a new book and place in Model attribute.
-	 */
-	@RequestMapping(value="/create", method=RequestMethod.GET)
+    /**
+     * Create a new book and place in Model attribute.
+     */
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
     public String createForm(Model model) {
-		model.addAttribute("book", new Book(Book.generateNextId()));
+        model.addAttribute("book", new Book(Book.generateNextId()));
         return "books/create";
     }
 
-	/**
-	 * Create/update a book.
-	*/
-	@RequestMapping(value="/create", method = RequestMethod.POST)
-	public String create(@Valid Book book, BindingResult bindingResult,
-			Model model, HttpServletRequest httpServletRequest,
-			RedirectAttributes redirectAttributes, Locale locale,
-			@RequestParam(value = "file", required = false) MultipartFile file) {
-		
-		if (bindingResult.hasErrors()) {
-			model.addAttribute("book", book);
-			return "books/create";
-		}
-		
-		logger.info("Creating/updating book");
-		
-		model.asMap().clear();
-		redirectAttributes.addFlashAttribute("message", new Message(
-				"success", messageSource.getMessage("book_save_success", new Object[] {}, locale)));
+    /**
+     * Create/update a book.
+     */
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public String create(@Valid Book book, BindingResult bindingResult,
+                         Model model, HttpServletRequest httpServletRequest,
+                         RedirectAttributes redirectAttributes, Locale locale,
+                         @RequestParam(value = "file", required = false) MultipartFile file) {
 
-		// Process upload file
-		if (!file.isEmpty()
-				&& (file.getContentType().equals(MediaType.IMAGE_JPEG_VALUE) || 
-					file.getContentType().equals(MediaType.IMAGE_PNG_VALUE) ||
-					file.getContentType().equals(MediaType.IMAGE_GIF_VALUE))) {
-			
-			logger.info("File name: " + file.getName());
-			logger.info("File size: " + file.getSize());
-			logger.info("File content type: " + file.getContentType());
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("book", book);
+            return "books/create";
+        }
 
-			byte[] fileContent = null;
-			String imageString = null;
+        logger.info("Creating/updating book");
 
-			try {
-				InputStream inputStream = file.getInputStream();
-				fileContent = IOUtils.toByteArray(inputStream);
+        model.asMap().clear();
+        redirectAttributes.addFlashAttribute("message", new Message(
+                "success", messageSource.getMessage("book_save_success", new Object[]{}, locale)));
 
-				// Convert byte[] into String image
-				imageString = ImageUtil.encodeToString(fileContent);
-				
-				book.setPhoto(imageString);
+        // Process upload file
+        if (!file.isEmpty()
+                && (file.getContentType().equals(MediaType.IMAGE_JPEG_VALUE) ||
+                file.getContentType().equals(MediaType.IMAGE_PNG_VALUE) ||
+                file.getContentType().equals(MediaType.IMAGE_GIF_VALUE))) {
 
-			} catch (IOException ex) {
-				logger.error("Error saving uploaded file");
-				book.setPhoto(ImageUtil.smallNoImage());
-			}
-		} else { // File is improper type or no file was uploaded.
+            logger.info("File name: " + file.getName());
+            logger.info("File size: " + file.getSize());
+            logger.info("File content type: " + file.getContentType());
 
-			// If book already exists, load its image into the 'book' object.
-			Book savedBook = bookService.findById(book.getId());
-			
-			if (savedBook != null) {
-				book.setPhoto(savedBook.getPhoto());
-			} else {// Else set to default no-image picture.
-				book.setPhoto(ImageUtil.smallNoImage());
-			}
-		}
+            byte[] fileContent = null;
+            String imageString = null;
 
-		bookService.save(book);
+            try {
+                InputStream inputStream = file.getInputStream();
+                fileContent = IOUtils.toByteArray(inputStream);
 
-		return "redirect:/" + UrlUtil.encodeUrlPathSegment(book.getId().toString(), httpServletRequest);
-	}
+                // Convert byte[] into String image
+                imageString = ImageUtil.encodeToString(fileContent);
 
-	/**
-	 * Returns the photo for the book with the specified id.
-	 */
-	@RequestMapping(value = "/photo/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-	@ResponseBody
-	public byte[] downloadPhoto(@PathVariable("id") String id) {
+                book.setPhoto(imageString);
 
-		Book book = bookService.findById(id);
-		logger.info("Downloading photo for id: {} with size: {}", book.getId(), book.getPhoto().length());
+            } catch (IOException ex) {
+                logger.error("Error saving uploaded file");
+                book.setPhoto(ImageUtil.smallNoImage());
+            }
+        } else { // File is improper type or no file was uploaded.
 
-		// Convert String image into byte[]
-		byte[] imageBytes = ImageUtil.decode(book.getPhoto());
-		
-		return imageBytes;
-	}
+            // If book already exists, load its image into the 'book' object.
+            Book savedBook = bookService.findById(book.getId());
 
-	/**
-	 * Deletes the book with the specified id.
-	 */
-	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-	public String delete(@PathVariable String id, Model model, Locale locale) {
-		logger.info("Deleting book with id: " + id);
-		Book book = bookService.findById(id);
+            if (savedBook != null) {
+                book.setPhoto(savedBook.getPhoto());
+            } else {// Else set to default no-image picture.
+                book.setPhoto(ImageUtil.smallNoImage());
+            }
+        }
 
-		if (book != null) {
-			bookService.delete(book);
-			logger.info("Book deleted successfully");
+        bookService.save(book);
 
-			model.addAttribute("message",	new Message("success", messageSource.getMessage(
-							"book_delete_success", new Object[] {}, locale)));
-		}
+        return "redirect:/" + UrlUtil.encodeUrlPathSegment(book.getId(), httpServletRequest);
+    }
 
-		List<Book> books = bookService.findAll();
-		model.addAttribute("books", books);
+    /**
+     * Returns the photo for the book with the specified id.
+     */
+    @RequestMapping(value = "/photo/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    @ResponseBody
+    public byte[] downloadPhoto(@PathVariable("id") String id) {
 
-		return "books/list";
-	}
-	
-	
-	@RequestMapping(value="/reset", method=RequestMethod.GET)
-	public String resetDatabase(Model model) {
-		logger.info("Resetting database to original state");
-		
-		bookService.restoreDefaultBooks();
-		
-		List<Book> books = bookService.findAll();
-		model.addAttribute("books", books);
+        Book book = bookService.findById(id);
+        logger.info("Downloading photo for id: {} with size: {}", book.getId(), book.getPhoto().length());
 
-		return "books/list";
-	}
+        // Convert String image into byte[]
+        return ImageUtil.decode(book.getPhoto());
+    }
+
+    /**
+     * Deletes the book with the specified id.
+     */
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    public String delete(@PathVariable String id, Model model, Locale locale) {
+        logger.info("Deleting book with id: " + id);
+        Book book = bookService.findById(id);
+
+        if (book != null) {
+            bookService.delete(book);
+            logger.info("Book deleted successfully");
+
+            model.addAttribute("message", new Message("success", messageSource.getMessage(
+                    "book_delete_success", new Object[]{}, locale)));
+        }
+
+        List<Book> books = bookService.findAll();
+        model.addAttribute("books", books);
+
+        return "books/list";
+    }
+
+
+    @RequestMapping(value = "/reset", method = RequestMethod.GET)
+    public String resetDatabase(Model model) {
+        logger.info("Resetting database to original state");
+
+        bookService.restoreDefaultBooks();
+
+        List<Book> books = bookService.findAll();
+        model.addAttribute("books", books);
+
+        return "books/list";
+    }
 }

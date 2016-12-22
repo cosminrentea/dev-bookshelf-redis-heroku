@@ -15,9 +15,9 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
  * A Book.
  */
 public class Book implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private static long longId = 100;
-	
+    private static final long serialVersionUID = 1L;
+    private static long longId = 100;
+
     private String id;
 
     @NotEmpty
@@ -27,13 +27,38 @@ public class Book implements Serializable {
     @NotEmpty
     private String publisher;
 
-	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	@DateTimeFormat(iso = ISO.DATE)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @DateTimeFormat(iso = ISO.DATE)
     private DateTime dateOfPublication;
 
     private String description;
 
     private String photo;
+
+    public Book() {
+        // intentionally empty
+    }
+
+    /**
+     * Constructor
+     */
+    public Book(String id, String name, String publisher, DateTime dateOfPublication,
+                String description, String photo) {
+        this.id = id;
+        this.name = name;
+        this.publisher = publisher;
+        this.dateOfPublication = dateOfPublication;
+        this.description = description;
+        this.photo = photo;
+    }
+
+    public Book(String id) {
+        this.id = id;
+    }
+
+    public static String generateNextId() {
+        return String.valueOf(longId++);
+    }
 
     public String getId() {
         return id;
@@ -83,32 +108,7 @@ public class Book implements Serializable {
         this.photo = photo;
     }
 
-    
-    /** No-args constructor */
-    public Book() {
-	}
-
-	/** Constructor */
-	public Book(String id, String name, String publisher, DateTime dateOfPublication,
-			String description, String photo) {
-		this.id = id;
-		this.name = name;
-		this.publisher = publisher;
-		this.dateOfPublication = dateOfPublication;
-		this.description = description;
-		this.photo = photo;
-	}
-	
-	/** Basic Constructor */
-	public Book(String id) {
-		this.id = id;
-	}
-	
-	public static String generateNextId() {
-		return String.valueOf(longId++);
-	}
-
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -119,7 +119,9 @@ public class Book implements Serializable {
 
         Book book = (Book) o;
 
-        if ( ! Objects.equals(id, book.id)) return false;
+        if (!Objects.equals(id, book.id)) {
+            return false;
+        }
 
         return true;
     }

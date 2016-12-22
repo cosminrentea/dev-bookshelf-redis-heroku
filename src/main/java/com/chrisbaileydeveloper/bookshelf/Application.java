@@ -8,14 +8,13 @@ import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.chrisbaileydeveloper.bookshelf.config.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
-
-import com.chrisbaileydeveloper.bookshelf.config.Constants;
 
 @SpringBootApplication
 public class Application {
@@ -24,18 +23,6 @@ public class Application {
     @Inject
     private Environment env;
 
-    /**
-     * Spring profiles can be configured with program arguments --spring.profiles.active=your-active-profile
-     */
-    @PostConstruct
-    public void initApplication() throws IOException {
-        if (env.getActiveProfiles().length == 0) {
-            log.warn("No Spring profile configured, running with default configuration");
-        } else {
-            log.info("Running with Spring profile(s) : {}", Arrays.toString(env.getActiveProfiles()));
-        }
-    }
-                                                                                                                                                                         
     /**
      * Main method, used to run the application.
      */
@@ -50,11 +37,11 @@ public class Application {
         addDefaultProfile(app, source);
         Environment env = app.run(args).getEnvironment();
         log.info("Access URLs:\n----------------------------------------------------------\n\t" +
-            "Local: \t\thttp://127.0.0.1:{}\n\t" +
-            "External: \thttp://{}:{}\n----------------------------------------------------------",
-            env.getProperty("server.port"),
-            InetAddress.getLocalHost().getHostAddress(),
-            env.getProperty("server.port"));
+                        "Local: \t\thttp://127.0.0.1:{}\n\t" +
+                        "External: \thttp://{}:{}\n----------------------------------------------------------",
+                env.getProperty("server.port"),
+                InetAddress.getLocalHost().getHostAddress(),
+                env.getProperty("server.port"));
     }
 
     /**
@@ -63,6 +50,18 @@ public class Application {
     private static void addDefaultProfile(SpringApplication app, SimpleCommandLinePropertySource source) {
         if (!source.containsProperty("spring.profiles.active")) {
             app.setAdditionalProfiles(Constants.SPRING_PROFILE_DEVELOPMENT);
+        }
+    }
+
+    /**
+     * Spring profiles can be configured with program arguments --spring.profiles.active=your-active-profile
+     */
+    @PostConstruct
+    public void initApplication() throws IOException {
+        if (env.getActiveProfiles().length == 0) {
+            log.warn("No Spring profile configured, running with default configuration");
+        } else {
+            log.info("Running with Spring profile(s) : {}", Arrays.toString(env.getActiveProfiles()));
         }
     }
 }

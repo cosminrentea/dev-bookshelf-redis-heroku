@@ -8,18 +8,23 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 public class UrlUtil {
-	public static String encodeUrlPathSegment(String pathSegment,
-			HttpServletRequest httpServletRequest) {
 
-		String enc = httpServletRequest.getCharacterEncoding();
+    private UrlUtil() {
+        // intentionally empty
+    }
 
-		if (enc == null)
-			enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+    public static String encodeUrlPathSegment(String pathSegment,
+                                              HttpServletRequest httpServletRequest) {
 
-		try {
-			pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-		} catch (UnsupportedEncodingException uee) {
-		}
-		return pathSegment;
-	}
+        String enc = httpServletRequest.getCharacterEncoding();
+
+        if (enc == null)
+            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {
+        }
+        return pathSegment;
+    }
 }

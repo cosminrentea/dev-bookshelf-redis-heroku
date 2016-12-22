@@ -14,33 +14,33 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 @EnableWebMvcSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	/**
-	 * Create two in-memory users (user & admin).
-	 */
+    /**
+     * Create two in-memory users (user & admin).
+     */
     @Inject
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    	auth
-         	.inMemoryAuthentication()
-         		.withUser("user").password("user").roles("USER").and()
-         		.withUser("admin").password("admin").roles("USER", "ADMIN");
+        auth
+                .inMemoryAuthentication()
+                .withUser("user").password("user").roles("USER").and()
+                .withUser("admin").password("admin").roles("USER", "ADMIN");
     }
-	
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .authorizeRequests()
-	            .antMatchers("/").permitAll()
-	            .antMatchers("/create").hasRole("ADMIN")
-	            .antMatchers("/update/**").hasRole("ADMIN")
-	            .antMatchers("/delete/**").hasRole("ADMIN")
-	            .and()
-            .formLogin()
-	            .loginPage("/signin")
-	            .permitAll()
-	            .defaultSuccessUrl("/")
-	            .and()
-            .logout()
-            	.logoutUrl("/logout")
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .antMatchers("/create").hasRole("ADMIN")
+                .antMatchers("/update/**").hasRole("ADMIN")
+                .antMatchers("/delete/**").hasRole("ADMIN")
+                .and()
+                .formLogin()
+                .loginPage("/signin")
+                .permitAll()
+                .defaultSuccessUrl("/")
+                .and()
+                .logout()
+                .logoutUrl("/logout")
                 .logoutSuccessUrl("/?logout")
                 .deleteCookies("JSESSIONID")
                 .permitAll();
@@ -48,6 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
     private static class GlobalSecurityConfiguration extends GlobalMethodSecurityConfiguration {
+        public GlobalSecurityConfiguration() {
+            // intentionally empty
+        }
     }
 
 }
