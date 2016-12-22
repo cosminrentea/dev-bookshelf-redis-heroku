@@ -1,7 +1,6 @@
 package com.chrisbaileydeveloper.bookshelf.repository;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -32,10 +31,9 @@ public class BookRepository {
         List<Book> books = new ArrayList<>();
 
         Set<String> keys = redisTemplate.keys("*");
-        Iterator<String> it = keys.iterator();
 
-        while (it.hasNext()) {
-            books.add(findById(it.next()));
+        for (String key : keys) {
+            books.add(findById(key));
         }
 
         return books;
@@ -49,10 +47,9 @@ public class BookRepository {
 
     public void deleteAll() {
         Set<String> keys = redisTemplate.keys("*");
-        Iterator<String> it = keys.iterator();
 
-        while (it.hasNext()) {
-            Book b = new Book(it.next());
+        for (String key : keys) {
+            Book b = new Book(key);
             delete(b);
         }
     }
