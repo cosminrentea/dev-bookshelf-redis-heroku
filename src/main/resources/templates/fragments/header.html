@@ -24,12 +24,19 @@
                 </div>
                 <div id="navbarCollapse" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#" th:href="@{/}" th:text="#{nav_home}">Home</a></li>
-                        <li><a href="#contact" th:text="#{nav_contact}">Contact</a></li>
+                        <li class="active">
+                            <a href="#" th:href="@{/}" th:text="#{nav_home}">Home</a>
+                        </li>
+                        <li>
+                            <a href="#contact" th:text="#{nav_contact}">Contact</a>
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li sec:authorize="!isAuthenticated()">
                             <a href="/signin" th:href="@{/signin}" th:text="#{nav_signin}">Sign in</a>
+                        </li>
+                        <li sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')">
+                            <a href="#" th:text="'[ ' + ${#authentication.name} + ' ]'">Welcome, Santa</a>
                         </li>
                         <li sec:authorize="isAuthenticated()">
                             <a href="/logout" th:href="@{#}" onclick="$('#form').submit();" th:text="#{label_logout}">Logout</a>

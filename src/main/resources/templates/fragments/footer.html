@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:th="http://www.thymeleaf.org">
     <head>
 
         <!-- Bootstrap 3 -->
@@ -12,12 +11,6 @@
     <body>
         <div th:fragment="footer">
             <hr/>
-            <div id="userinfo">
-                <div sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')">
-                    <span th:text="#{label_welcome} + ', ' + ${#authentication.name}">Welcome, Santa</span>
-                </div>
-            </div>
-
             <div>
                 <a href="list.html" th:href="@{/}" th:text="#{home_text}">Home</a>
                 | <a href="list.html" th:href="@{?lang=en}" th:text="#{label_en_CA}">English</a>
