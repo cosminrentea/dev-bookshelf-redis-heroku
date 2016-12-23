@@ -1,6 +1,10 @@
 spring:
   profiles:
     active: dev
+  resources:
+    cache-period: 0
+  messages:
+    cache-seconds: 0
   thymeleaf:
     cache: false
   redis:
