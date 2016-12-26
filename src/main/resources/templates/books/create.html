@@ -65,14 +65,13 @@
             <div th:replace="fragments/footer :: footer">Footer</div>
         </div>
 
-
         <!-- Bootstrap-Datepicker JavaScript-->
         <!-- As shown here {@link http://eternicode.github.io/bootstrap-datepicker/?markup=input&format=yyyy-mm-dd&weekStart=&startDate=&endDate=&startView=0&minViewMode=0&todayBtn=false&clearBtn=false&language=en&orientation=auto&multidate=&multidateSeparator=&keyboardNavigation=on&forceParse=on#sandbox} -->
         <script src="../../static/js/bootstrap-datepicker.min.js" th:src="@{/js/bootstrap-datepicker.min.js}"></script>
 
         <!-- CKEditor JavaScript -->
-        <script src="../../static/ckeditor/standard/ckeditor.js" th:src="@{/ckeditor/standard/ckeditor.js}"></script>
-        <script src="../../static/ckeditor/standard/adapters/jquery.js" th:src="@{/ckeditor/standard/adapters/jquery.js}"></script>
+        <script src="../../static/ckeditor/standard/ckeditor.js" th:src="@{/webjars/ckeditor/standard/ckeditor.js}"></script>
+        <script src="../../static/ckeditor/standard/adapters/jquery.js" th:src="@{/webjars/ckeditor/standard/adapters/jquery.js}"></script>
 
         <!-- Bootstrap-Datepicker & CKEditor -->
         <script>
