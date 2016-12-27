@@ -9,15 +9,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- * Test class for the BookServiceImpl service.
+ * Test class for the BookService.
  *
  * @see BookService
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class BookServiceTest {
 	private static final String EXPECTED_NAME = "Effective Java";
     private static final String EXPECTED_PUBLISHER = "Addison-Wesley";

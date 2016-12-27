@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class SigninControllerTest {
 	private MockMvc mockMvc;
 
