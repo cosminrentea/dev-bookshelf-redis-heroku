@@ -22,9 +22,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +35,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class BookController {
 
-    private final Logger logger = LoggerFactory.getLogger(BookController.class);
+    private static final Logger logger = LoggerFactory.getLogger(BookController.class);
 
     @Inject
     private BookService bookService;
@@ -45,7 +46,7 @@ public class BookController {
     /**
      * List all books.
      */
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String list(Model model) {
         logger.info("Listing books");
 
@@ -58,9 +59,18 @@ public class BookController {
     }
 
     /**
+     * Retrieve the book with the specified id for the update form.
+     */
+    @GetMapping(value = "/update/{id}")
+    public String updateForm(@PathVariable("id") String id, Model model) {
+        model.addAttribute("book", bookService.findById(id));
+        return "books/create";
+    }
+
+    /**
      * Retrieve the book with the specified id.
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public String show(@PathVariable("id") String id, Model model) {
         logger.info("Listing book with id: " + id);
 
@@ -71,18 +81,9 @@ public class BookController {
     }
 
     /**
-     * Retrieve the book with the specified id for the update form.
-     */
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
-    public String updateForm(@PathVariable("id") String id, Model model) {
-        model.addAttribute("book", bookService.findById(id));
-        return "books/create";
-    }
-
-    /**
      * Create a new book and place in Model attribute.
      */
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    @GetMapping(value = "/create")
     public String createForm(Model model) {
         model.addAttribute("book", new Book(Book.generateNextId()));
         return "books/create";
@@ -91,7 +92,7 @@ public class BookController {
     /**
      * Create/update a book.
      */
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping(value = "/create")
     public String create(@Valid Book book, BindingResult bindingResult,
                          Model model, HttpServletRequest httpServletRequest,
                          RedirectAttributes redirectAttributes, Locale locale,
@@ -130,8 +131,8 @@ public class BookController {
 
                 book.setPhoto(imageString);
 
-            } catch (IOException ex) {
-                logger.error("Error saving uploaded file");
+            } catch (final IOException ex) {
+                logger.error("Error saving uploaded file", ex);
                 book.setPhoto(ImageUtil.smallNoImage());
             }
         } else { // File is improper type or no file was uploaded.
@@ -141,7 +142,8 @@ public class BookController {
 
             if (savedBook != null) {
                 book.setPhoto(savedBook.getPhoto());
-            } else {// Else set to default no-image picture.
+            } else {
+                // Else set to default no-image picture.
                 book.setPhoto(ImageUtil.smallNoImage());
             }
         }
@@ -154,7 +156,7 @@ public class BookController {
     /**
      * Returns the photo for the book with the specified id.
      */
-    @RequestMapping(value = "/photo/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/photo/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
     public byte[] downloadPhoto(@PathVariable("id") String id) {
 
@@ -168,7 +170,7 @@ public class BookController {
     /**
      * Deletes the book with the specified id.
      */
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/delete/{id}")
     public String delete(@PathVariable String id, Model model, Locale locale) {
         logger.info("Deleting book with id: " + id);
         Book book = bookService.findById(id);
@@ -187,8 +189,7 @@ public class BookController {
         return "books/list";
     }
 
-
-    @RequestMapping(value = "/reset", method = RequestMethod.GET)
+    @GetMapping(value = "/reset")
     public String resetDatabase(Model model) {
         logger.info("Resetting database to original state");
 
