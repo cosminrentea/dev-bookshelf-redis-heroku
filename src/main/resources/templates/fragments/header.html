@@ -22,14 +22,35 @@
                 </div>
                 <div id="navbarCollapse" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
+                        <!-- TODO add Contact page-->
+                        <!--
                         <li class="active">
                             <a href="#" th:href="@{/}" th:text="#{nav_home}">Home</a>
                         </li>
                         <li>
                             <a href="#contact" th:text="#{nav_contact}">Contact</a>
                         </li>
+                        -->
+                        <li id="liAddBook" sec:authorize="hasRole('ROLE_USER')">
+                            <a id="btnAddBook" class="btn btn-success"
+                               th:href="@{/create}" th:text="#{menu_add_book}">menu_add_book</a>
+                        </li>
+
+                        <li id="liResetBooks" sec:authorize="hasRole('ROLE_ADMIN')">
+                            <a id="btnResetBooks" class="btn btn-primary"
+                               th:href="@{/reset}" th:text="#{label_book_reset_all}">label_book_reset_all</a>
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" th:text="#{label_language}">Language<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a th:href="@{?lang=en}" th:text="#{label_en_CA}">English</a></li>
+                                <li><a th:href="@{?lang=de}" th:text="#{label_de_DE}">German</a></li>
+                                <li><a th:href="@{?lang=fr}" th:text="#{label_fr_CA}">French</a></li>
+                                <li><a th:href="@{?lang=ro}" th:text="#{label_ro_RO}">Romanian</a></li>
+                            </ul>
+                        </li>
                         <li sec:authorize="!isAuthenticated()">
                             <a href="/signin" th:href="@{/signin}" th:text="#{nav_signin}">Sign in</a>
                         </li>
