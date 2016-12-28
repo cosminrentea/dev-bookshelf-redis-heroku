@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import com.chrisbaileydeveloper.bookshelf.domain.Book;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class DatabaseConfiguration {
 
     @Inject
-    private JedisConnectionFactory jedisConnFactory;
+    private RedisConnectionFactory redisConnFactory;
 
     @Bean
     public StringRedisSerializer stringRedisSerializer() {
@@ -29,7 +29,7 @@ public class DatabaseConfiguration {
     @Bean
     public RedisTemplate<String, Book> redisTemplate() {
         RedisTemplate<String, Book> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(jedisConnFactory);
+        redisTemplate.setConnectionFactory(redisConnFactory);
         redisTemplate.setKeySerializer(stringRedisSerializer());
         redisTemplate.setValueSerializer(jacksonJsonRedisJsonSerializer());
         return redisTemplate;
