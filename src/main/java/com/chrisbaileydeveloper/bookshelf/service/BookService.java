@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BookService {
-    final Logger logger = LoggerFactory.getLogger(BookService.class);
+    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
     @Inject
     private BookRepository bookRepository;
@@ -85,14 +85,15 @@ public class BookService {
                 bookRepository.save(b);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            logger.error("exception while reading CSV file", e);
         } finally {
             try {
-                // Release resources.
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                if (br != null) {
+                    br.close();
+                }
+            } catch (final IOException e) {
+                logger.error("exception while closing CSV file", e);
             }
         }
 
