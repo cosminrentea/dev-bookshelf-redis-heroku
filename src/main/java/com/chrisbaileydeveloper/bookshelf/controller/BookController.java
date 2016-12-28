@@ -37,6 +37,9 @@ public class BookController {
 
     private static final Logger logger = LoggerFactory.getLogger(BookController.class);
 
+    private static final String BOOKS_LIST = "books/list";
+    private static final String BOOKS_CREATE = "books/create";
+
     @Inject
     private BookService bookService;
 
@@ -55,7 +58,7 @@ public class BookController {
 
         logger.info("No. of books: " + books.size());
 
-        return "books/list";
+        return BOOKS_LIST;
     }
 
     /**
@@ -64,7 +67,7 @@ public class BookController {
     @GetMapping(value = "/update/{id}")
     public String updateForm(@PathVariable("id") String id, Model model) {
         model.addAttribute("book", bookService.findById(id));
-        return "books/create";
+        return BOOKS_CREATE;
     }
 
     /**
@@ -86,7 +89,7 @@ public class BookController {
     @GetMapping(value = "/create")
     public String createForm(Model model) {
         model.addAttribute("book", new Book(Book.generateNextId()));
-        return "books/create";
+        return BOOKS_CREATE;
     }
 
     /**
@@ -100,7 +103,7 @@ public class BookController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("book", book);
-            return "books/create";
+            return BOOKS_CREATE;
         }
 
         logger.info("Creating/updating book");
@@ -186,7 +189,7 @@ public class BookController {
         List<Book> books = bookService.findAll();
         model.addAttribute("books", books);
 
-        return "books/list";
+        return BOOKS_LIST;
     }
 
     @GetMapping(value = "/reset")
@@ -198,6 +201,6 @@ public class BookController {
         List<Book> books = bookService.findAll();
         model.addAttribute("books", books);
 
-        return "books/list";
+        return BOOKS_LIST;
     }
 }
