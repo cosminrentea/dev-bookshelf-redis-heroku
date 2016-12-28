@@ -1,9 +1,9 @@
 package com.chrisbaileydeveloper.bookshelf.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 @Configuration
@@ -11,7 +11,8 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 public class DevDatabaseConfiguration {
 
     @Bean
-    public JedisConnectionFactory jedisConnFactory() {
+    public RedisConnectionFactory jedisConnFactory() {
         return new JedisConnectionFactory();
     }
+    
 }
