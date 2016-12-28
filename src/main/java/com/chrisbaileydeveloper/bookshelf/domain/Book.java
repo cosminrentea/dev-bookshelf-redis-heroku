@@ -119,11 +119,7 @@ public class Book implements Serializable {
 
         Book book = (Book) o;
 
-        if (!Objects.equals(id, book.id)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(id, book.id);
     }
 
     @Override
