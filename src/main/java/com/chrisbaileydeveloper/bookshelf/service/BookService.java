@@ -3,13 +3,13 @@ package com.chrisbaileydeveloper.bookshelf.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import com.chrisbaileydeveloper.bookshelf.domain.Book;
 import com.chrisbaileydeveloper.bookshelf.repository.BookRepository;
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -26,7 +26,7 @@ public class BookService {
     private BookRepository bookRepository;
 
     public List<Book> findAll() {
-        return Lists.newArrayList(bookRepository.findAll());
+        return new ArrayList<>(bookRepository.findAll());
     }
 
     public Book findById(String id) {

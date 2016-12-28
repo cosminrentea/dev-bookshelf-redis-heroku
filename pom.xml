@@ -32,7 +32,6 @@
         <joda-time-hibernate.version>1.4</joda-time-hibernate.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
-        <guava.version>20.0</guava.version>
         <usertype-core.version>6.0.1.GA</usertype-core.version>
         <assertj-core.version>1.0.0m1</assertj-core.version>
         <bootstrap.version>3.3.7-1</bootstrap.version>
@@ -100,12 +99,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
 
         <dependency>
