@@ -17,13 +17,15 @@ import uk.co.gcwilliams.jodatime.thymeleaf.JodaTimeDialect;
 @Configuration
 public class LocaleConfiguration extends WebMvcConfigurerAdapter {
 
+    private static final Locale DEFAULT_LOCALE = new Locale("ro", "RO");
+
     /**
      * Thymeleaf LocaleResolver
      */
     @Bean(name = "localeResolver")
     public LocaleResolver localeResolver() {
         SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
-        sessionLocaleResolver.setDefaultLocale(Locale.CANADA);
+        sessionLocaleResolver.setDefaultLocale(DEFAULT_LOCALE);
         return sessionLocaleResolver;
     }
 
