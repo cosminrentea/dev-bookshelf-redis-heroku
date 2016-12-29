@@ -28,6 +28,6 @@ package com.chrisbaileydeveloper.bookshelf;
 //        }
 //
 //        log.warn("No Spring profile configured, running with default configuration");
-//        return Constants.SPRING_PROFILE_DEVELOPMENT;
+//        return Profiles.DEV;
 //    }
 //}

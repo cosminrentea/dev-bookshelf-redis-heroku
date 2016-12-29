@@ -7,11 +7,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 @Configuration
-@Profile(Constants.SPRING_PROFILE_DEVELOPMENT)
+@Profile(Profiles.DEV)
 public class DevDatabaseConfiguration {
 
     @Bean
-    public RedisConnectionFactory jedisConnFactory() {
+    public RedisConnectionFactory redisConnFactory() {
         return new JedisConnectionFactory();
     }
     

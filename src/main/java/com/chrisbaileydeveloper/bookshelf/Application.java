@@ -8,7 +8,7 @@ import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.chrisbaileydeveloper.bookshelf.config.Constants;
+import com.chrisbaileydeveloper.bookshelf.config.Profiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -48,7 +48,7 @@ public class Application {
      */
     private static void addDefaultProfile(SpringApplication app, SimpleCommandLinePropertySource source) {
         if (!source.containsProperty("spring.profiles.active")) {
-            app.setAdditionalProfiles(Constants.SPRING_PROFILE_DEVELOPMENT);
+            app.setAdditionalProfiles(Profiles.DEV);
         }
     }
 

@@ -4,25 +4,28 @@ package com.chrisbaileydeveloper.bookshelf.config;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import redis.clients.jedis.Protocol;
 
 @Configuration
-@Profile(Constants.SPRING_PROFILE_PRODUCTION)
+@Profile(Profiles.PROD)
 public class ProdDatabaseConfiguration {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProdDatabaseConfiguration.class);
+
     @Bean
-    public JedisConnectionFactory jedisConnFactory() {
+    public RedisConnectionFactory redisConnFactory() {
 
         try {
-            String redistogoUrl = System.getenv("REDISTOGO_URL");
-            URI redistogoUri = new URI(redistogoUrl);
+            URI redistogoUri = new URI(System.getenv("REDISTOGO_URL"));
 
             JedisConnectionFactory jedisConnFactory = new JedisConnectionFactory();
-
             jedisConnFactory.setUsePool(true);
             jedisConnFactory.setHostName(redistogoUri.getHost());
             jedisConnFactory.setPort(redistogoUri.getPort());
@@ -31,8 +34,8 @@ public class ProdDatabaseConfiguration {
 
             return jedisConnFactory;
 
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        } catch (final URISyntaxException e) {
+            logger.error("Redis URI Syntax Exception", e);
             return null;
         }
     }
